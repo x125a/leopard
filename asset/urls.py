@@ -21,5 +21,8 @@ urlpatterns = [
     # path('login/', views.login),
     # path('enroll/', views.enroll),
     # path('logout/', views.logout),
-    path('', views.index)
+    path('', views.index),
+    path('node/', views.NodeList.as_view()),
+    path('node/<pk>', views.NodeDetail.as_view()),
+
 ]
