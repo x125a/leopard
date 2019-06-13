@@ -9,4 +9,4 @@ class NodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Node
-        fields = ('nid', 'name', 'ip', 'port')
+        fields = ('nid', 'name', 'ip', 'port', 'status')
