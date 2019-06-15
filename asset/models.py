@@ -5,7 +5,7 @@ import uuid
 
 class Node(models.Model):
     '''节点'''
-    nid = models.UUIDField(default=uuid.uuid4, null=False)
+    nid = models.UUIDField(default=uuid.uuid4, primary_key=True, null=False)
     name = models.CharField(max_length=255, default=None)
     ip = models.GenericIPAddressField(null=True, blank=True)
     port = models.IntegerField(default=6800, blank=True, null=True)
