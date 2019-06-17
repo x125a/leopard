@@ -6,13 +6,13 @@ from io import BytesIO
 def get_valid_img(request):
     # 获取随机颜色的函数
     def get_random_color():
-        return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
-
+        return random.randint(0, 100), random.randint(100, 170), random.randint(170, 255)
+        # return 100, 200, 250
     # 生成一个图片对象
     img_obj = Image.new(
         'RGB',
         (110, 35),
-        get_random_color()
+        (232, 240, 254)
     )
     # 在生成的图片上写字符
     # 生成一个图片画笔对象

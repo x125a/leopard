@@ -545,10 +545,10 @@
                                     <thead>
                                     <tr>
                                         <th>序号</th>
+                                        <th>状态</th>
                                         <th>节点名</th>
                                         <th>IP地址</th>
                                         <th>端口</th>
-                                        <th>状态</th>
                                         <th>操作</th>
                                     </tr>
                                     </thead>
@@ -809,13 +809,21 @@
             success: function (res) {
                 {#console.log(res);#}
                 $.each(res, function (k, v) {
+                    var status = '';
+                    if (v.status == 1) {
+                        status = '<span class="label label-success">正常</span>'
+                    } else {
+                        status = '<span class="label label-danger">错误</span>'
+                    }
                     tbody += '<tr><td>' + k + '</td>' +
+                        '<td>' + status + '</td>' +
                         '<td>' + v.name + '</td>' +
                         '<td>' + v.ip + '</td>' +
                         '<td>' + v.port + '</td>' +
-                        '<td>' + v.status + '</td>' +
-                        '<td><a href="/admin/asset/node/' + v.nid + '/change/" target="blank">配置</a></td>' +
-                        '</tr>'
+                        '<td>' +
+                        '<button type="button" class="btn btn-info btn-xs" onclick="NodeEdit(this)">编辑</button> ' +
+                        '<button type="button" class="btn btn-success btn-xs" onclick="NodeDeploy(this)">配置</button>' +
+                        '</td></tr>'
                 });
                 tbody += '</tbody>';
                 $('#node-list').append(tbody)
@@ -823,6 +831,13 @@
         })
     })
 </script>
+<script>
+    function NodeEdit(obj){
+        location.href = '/asset/node/detail/';
+    }
 
+</script>
+{% block js %}
+{% endblock %}
 </body>
 </html>

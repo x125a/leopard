@@ -14,7 +14,7 @@ def index(request):
     return render(request, 'asset/index.html')
 
 
-def detail(request):
+def detail(request, ):
     return render(request, 'asset/detail.html')
 
 class NodeList(APIView):
