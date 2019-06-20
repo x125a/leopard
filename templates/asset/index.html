@@ -555,6 +555,64 @@
                                 </table>
                             </div>
                             <!-- /.box-body -->
+                            <div class="modal fade" id="node-detail-model" style="display: none;">
+                                <div class="text-center"
+                                     style="position: absolute;left: 35%;top: 25%;border-radius: 8px;width: 50%;height: 40%;">
+                                    <div class="box box-info">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">修改节点</h3>
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <!-- form start -->
+                                        <form class="form-horizontal">
+                                            <div class="box-body">
+                                                <div class="form-group">
+                                                    <label for="inputEmail3" class="col-sm-2 control-label">节点名</label>
+
+                                                    <div class="col-sm-9">
+                                                        <input type="text" name="node-name-model" class="form-control"
+                                                               id="inputEmail3">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword3"
+                                                           class="col-sm-2 control-label">IP地址</label>
+
+                                                    <div class="col-sm-9">
+                                                        <input type="text" name="node-ip-model" class="form-control"
+                                                               id="inputPassword3">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword3"
+                                                           class="col-sm-2 control-label">端口</label>
+
+                                                    <div class="col-sm-9">
+                                                        <input type="text" name="node-port-model" class="form-control"
+                                                               id="inputPassword3">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">备注</label>
+                                                    <div class="col-sm-9">
+                                                        <textarea class="form-control" name="node-desc-model" rows="3"
+                                                              style="resize:none;"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.box-body -->
+                                            <div class="box-footer">
+                                                <button type="submit" id="node-delete" class="btn btn-danger">删除
+                                                </button>
+                                                <button type="submit" id="node-modify" class="btn btn-info pull-right">
+                                                    确定
+                                                </button>
+                                            </div>
+                                            <!-- /.box-footer -->
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.box -->
                     </div>
@@ -821,7 +879,8 @@
                         '<td>' + v.ip + '</td>' +
                         '<td>' + v.port + '</td>' +
                         '<td>' +
-                        '<button type="button" class="btn btn-info btn-xs" onclick="NodeEdit(this)">编辑</button> ' +
+                        '<button type="button" data="' + v.nid +
+                        '" class="btn btn-info btn-xs" data-toggle="modal" data-target="#node-detail-model" onclick="NodeEdit(this)">编辑</button> ' +
                         '<button type="button" class="btn btn-success btn-xs" onclick="NodeDeploy(this)">配置</button>' +
                         '</td></tr>'
                 });
@@ -832,8 +891,21 @@
     })
 </script>
 <script>
-    function NodeEdit(obj){
-        location.href = '/asset/node/detail/';
+    function NodeEdit(obj) {
+        {#location.href = '/asset/node/detail/';#}
+        console.log($(obj).attr("data"));
+        $.ajax({
+            url: '/asset/node/' + $(obj).attr("data"),
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                console.log(res)
+                $("input[name='node-name-model']").val(res.name);
+                $("input[name='node-ip-model']").val(res.ip);
+                $("input[name='node-port-model']").val(res.port);
+                $("textarea[name='node-desc-model']").val(res.description);
+            }
+        })
     }
 
 </script>

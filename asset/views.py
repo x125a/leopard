@@ -14,7 +14,10 @@ def index(request):
     return render(request, 'asset/index.html')
 
 
-def detail(request, ):
+def detail(request):
+    # if request.method == 'GET':
+    #     node = Node.objects.get(nid=pk)
+
     return render(request, 'asset/detail.html')
 
 class NodeList(APIView):
