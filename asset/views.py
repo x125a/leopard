@@ -57,14 +57,12 @@ class NodeDetail(APIView):
 
     def post(self, request, pk):
         node = self.get_row(pk)
-        data = {
-            "nid": "400d75a5-21a5-451d-9aa2-ec17db3f78f4",
-            "name": "本机",
-            "ip": "127.0.0.200",
-            "port": 6800
-        }
-        serializer = NodeSerializer(node, data=data)
-        # serializer = NodeSerializer(node, data=request.POST.dict())
+        # data = {}
+        # for k, v in request.POST.dict().items():
+        #     data[k.strip('node--model')] = v
+        # print(data)
+        print(request.POST.dict())
+        serializer = NodeSerializer(node, data=request.POST.dict())
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
