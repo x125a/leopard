@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'account',
     'asset',
+    'project',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +124,6 @@ STATICFILES_DIRS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework.authentication.TokenAuthentication',)
 }
+
+
+MONGO_URI = 'mongodb://admin:tongna888@106.12.113.52:27017/'

@@ -2,6 +2,7 @@ import requests
 from django.shortcuts import render
 from django.http import Http404
 
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -15,10 +16,8 @@ def index(request):
 
 
 def detail(request):
-    # if request.method == 'GET':
-    #     node = Node.objects.get(nid=pk)
-
     return render(request, 'asset/detail.html')
+
 
 class NodeList(APIView):
     def get_status(self, pk):
@@ -57,13 +56,13 @@ class NodeDetail(APIView):
 
     def post(self, request, pk):
         node = self.get_row(pk)
-        # data = {}
-        # for k, v in request.POST.dict().items():
-        #     data[k.strip('node--model')] = v
-        # print(data)
-        print(request.POST.dict())
         serializer = NodeSerializer(node, data=request.POST.dict())
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    def delete(self, request, pk):
+        node = self.get_row(pk)
+        node.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

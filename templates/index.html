@@ -1,0 +1,236 @@
+{% extends 'asset/index.html' %}
+{% block content %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        General Form Elements
+        <small>Preview</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Forms</a></li>
+        <li class="active">General Elements</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <!-- right column -->
+        <div class="col-md-6">
+            <div class="detail-bod">
+                <div id="detail" style="width: 700px;height: 420px;"></div>
+            </div>
+        </div>
+        <!--/.col (right) -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+{% endblock %}
+{% block js %}
+
+<script src="/static/js/echarts.common.min.js"></script>
+<script>
+    $('#back').click(function () {
+        location.href = '/soil/detail/{{ sid }}';
+    });
+    $(document).ready(function () {
+        // 基于准备好的dom，初始化echarts实例
+        var MonthChart = echarts.init(document.getElementById('detail'));
+        $.getJSON("/dashboard/month/").done(function (data) {
+            var date = [];
+            var update = [];
+            var add = [];
+
+            $.each(data, function (key, value) {
+                date.push(value['date']);
+                update.push(value['value'][0]);
+                add.push(value['value'][1]);
+            });
+            console.log(date);
+            console.log(update);
+            console.log(add);
+
+            // // 指定图表的配置项和数据
+            // var option = {
+            //     title: {
+            //         text: '本月数据统计'
+            //     },
+            //     toolbox: { //可视化的工具箱
+            //         show: true,
+            //         feature: {
+            //             dataView: { //数据视图
+            //                 show: true
+            //             },
+            //             restore: { //重置
+            //                 show: true
+            //             },
+            //             dataZoom: { //数据缩放视图
+            //                 show: true
+            //             },
+            //             saveAsImage: {//保存图片
+            //                 show: true
+            //             },
+            //             magicType: {//动态类型切换
+            //                 type: ['bar', 'line']
+            //             }
+            //         }
+            //     },
+            //     tooltip: {
+            //         show: true
+            //     },
+            //     legend: {
+            //         data: ['值']
+            //     },
+            //     dataZoom: [
+            //         {
+            //             show: true,
+            //             realtime: true,
+            //             start: 50,
+            //             end: 100
+            //         },
+            //         {
+            //             type: 'inside',
+            //             realtime: true,
+            //             start: 50,
+            //             end: 100
+            //         }
+            //     ],
+            //     xAxis: {
+            //         data: date
+            //     },
+            //     yAxis: {}, //y轴刻度自适应
+            //     series: [{
+            //         // {#name: '值',#}
+            //         type: 'line',
+            //         smooth: true,
+            //         data: update,
+            //         itemStyle: {
+            //             normal: {
+            //                 color: '#18c9be',
+            //                 lineStyle: {
+            //                     color: '#18c9be'
+            //                 }
+            //             }
+            //         },
+            //     }]
+            // };
+            // // 使用刚指定的配置项和数据显示图表。
+
+
+            var option = {
+                title: {
+                    text: '本月数据统计'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: [ '新增统计', '更新统计',]
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: date
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '更新统计',
+                        type: 'line',
+                        smooth: true,
+                        // stack: '总量',
+                        data: update
+                    },
+                    {
+                        name: '新增统计',
+                        type: 'line',
+                        smooth: true,
+                        // stack: '总量',
+                        data: add
+                    },
+                ]
+            };
+
+
+            // option = {
+            //     legend: {},
+            //     tooltip: {
+            //         trigger: 'axis',
+            //         showContent: false
+            //     },
+            //     dataset: {
+            //         source: [
+            //             date,
+            //             update,
+            //             add,
+            //             // ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+            //             // ['Matcha Latte', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
+            //             // ['Milk Tea', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
+            //             // ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
+            //             // ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
+            //         ]
+            //     },
+            //     xAxis: {type: 'category'},
+            //     yAxis: {gridIndex: 0},
+            //     grid: {top: '55%'},
+            //     series: [
+            //         {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+            //         {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+            //         {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+            //         {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+            //         {
+            //             type: 'pie',
+            //             id: 'pie',
+            //             radius: '30%',
+            //             center: ['50%', '25%'],
+            //             label: {
+            //                 formatter: '{b}: {@2012} ({d}%)'
+            //             },
+            //             encode: {
+            //                 itemName: 'product',
+            //                 value: '2012',
+            //                 tooltip: '2012'
+            //             }
+            //         }
+            //     ]
+            // };
+            //
+            // MonthChart.on('updateAxisPointer', function (event) {
+            //     var xAxisInfo = event.axesInfo[0];
+            //     if (xAxisInfo) {
+            //         var dimension = xAxisInfo.value + 1;
+            //         MonthChart.setOption({
+            //             series: {
+            //                 id: 'pie',
+            //                 label: {
+            //                     formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+            //                 },
+            //                 encode: {
+            //                     value: dimension,
+            //                     tooltip: dimension
+            //                 }
+            //             }
+            //         });
+            //     }
+            // });
+
+            MonthChart.setOption(option);
+        });
+    })
+</script>
+{% endblock %}

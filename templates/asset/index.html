@@ -602,9 +602,9 @@
                                             </div>
                                             <!-- /.box-body -->
                                             <div class="box-footer">
-                                                <button type="submit" id="node-delete" class="btn btn-danger">删除
+                                                <button type="button" id="node-delete" class="btn btn-danger pull-left">删除
                                                 </button>
-                                                <button type="submit" id="node-modify" class="btn btn-info pull-right">
+                                                <button type="button" id="node-modify" class="btn btn-info pull-right">
                                                     确定
                                                 </button>
                                             </div>
@@ -917,20 +917,25 @@
             $.ajax({
                 url: '/asset/node/' + nid,
                 type: 'post',
-                data: {nid: nid, name:name, ip:ip, port:port, description:dec},
-                contentType: 'json',
+                data: {nid: nid, name:name, ip:ip, port:port, description:desc},
                 success: function (res) {
-                    // console.log(res)
-                    // if (res.status) {
-                    //     location.href = res.msg;
-                    // } else {
-                    //     alert(res.msg);
-                    // }
+                    location.href = '/asset/'
                 }
             })
         });
 </script>
-
+<script type="text/javascript">
+    $('#node-delete').click(function () {
+            var nid=$("input[name='node-nid-model']").val();
+            $.ajax({
+                url: '/asset/node/' + nid,
+                type: 'delete',
+                success: function (res) {
+                    location.href = '/asset/'
+                }
+            })
+        });
+</script>
 {% block js %}
 {% endblock %}
 </body>
