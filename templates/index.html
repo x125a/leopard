@@ -16,15 +16,31 @@
 <!-- Main content -->
 <section class="content">
     <div class="row">
-        <!-- right column -->
-        <div class="col-md-6">
+        <div class="col-md-7">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" id="this-year">年度</button>
+                <button type="button" class="btn btn-default" id="last-month">上月</button>
+                <button type="button" class="btn btn-default" id="this-month">本月</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-7">
             <div class="detail-bod">
-                <div id="detail" style="width: 700px;height: 420px;"></div>
+                <div id="month" style="width: 700px;height: 450px;"></div>
+            </div>
+        </div>
+        <!--/.col (left) -->
+
+        <!-- right column -->
+        <div class="col-md-5">
+            <div class="detail-bod">
+                <div id="day-bar" style="width: 520px;height: 450px;"></div>
             </div>
         </div>
         <!--/.col (right) -->
     </div>
-    <!-- /.row -->
 </section>
 <!-- /.content -->
 {% endblock %}
@@ -32,12 +48,9 @@
 
 <script src="/static/js/echarts.common.min.js"></script>
 <script>
-    $('#back').click(function () {
-        location.href = '/soil/detail/{{ sid }}';
-    });
     $(document).ready(function () {
         // 基于准备好的dom，初始化echarts实例
-        var MonthChart = echarts.init(document.getElementById('detail'));
+        var MonthChart = echarts.init(document.getElementById('month'));
         $.getJSON("/dashboard/month/").done(function (data) {
             var date = [];
             var update = [];
@@ -48,76 +61,6 @@
                 update.push(value['value'][0]);
                 add.push(value['value'][1]);
             });
-            console.log(date);
-            console.log(update);
-            console.log(add);
-
-            // // 指定图表的配置项和数据
-            // var option = {
-            //     title: {
-            //         text: '本月数据统计'
-            //     },
-            //     toolbox: { //可视化的工具箱
-            //         show: true,
-            //         feature: {
-            //             dataView: { //数据视图
-            //                 show: true
-            //             },
-            //             restore: { //重置
-            //                 show: true
-            //             },
-            //             dataZoom: { //数据缩放视图
-            //                 show: true
-            //             },
-            //             saveAsImage: {//保存图片
-            //                 show: true
-            //             },
-            //             magicType: {//动态类型切换
-            //                 type: ['bar', 'line']
-            //             }
-            //         }
-            //     },
-            //     tooltip: {
-            //         show: true
-            //     },
-            //     legend: {
-            //         data: ['值']
-            //     },
-            //     dataZoom: [
-            //         {
-            //             show: true,
-            //             realtime: true,
-            //             start: 50,
-            //             end: 100
-            //         },
-            //         {
-            //             type: 'inside',
-            //             realtime: true,
-            //             start: 50,
-            //             end: 100
-            //         }
-            //     ],
-            //     xAxis: {
-            //         data: date
-            //     },
-            //     yAxis: {}, //y轴刻度自适应
-            //     series: [{
-            //         // {#name: '值',#}
-            //         type: 'line',
-            //         smooth: true,
-            //         data: update,
-            //         itemStyle: {
-            //             normal: {
-            //                 color: '#18c9be',
-            //                 lineStyle: {
-            //                     color: '#18c9be'
-            //                 }
-            //             }
-            //         },
-            //     }]
-            // };
-            // // 使用刚指定的配置项和数据显示图表。
-
 
             var option = {
                 title: {
@@ -127,7 +70,7 @@
                     trigger: 'axis'
                 },
                 legend: {
-                    data: [ '新增统计', '更新统计',]
+                    data: ['新增统计', '更新统计',]
                 },
                 grid: {
                     left: '3%',
@@ -153,84 +96,124 @@
                         name: '更新统计',
                         type: 'line',
                         smooth: true,
-                        // stack: '总量',
                         data: update
                     },
                     {
                         name: '新增统计',
                         type: 'line',
                         smooth: true,
-                        // stack: '总量',
                         data: add
                     },
                 ]
             };
-
-
-            // option = {
-            //     legend: {},
-            //     tooltip: {
-            //         trigger: 'axis',
-            //         showContent: false
-            //     },
-            //     dataset: {
-            //         source: [
-            //             date,
-            //             update,
-            //             add,
-            //             // ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
-            //             // ['Matcha Latte', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
-            //             // ['Milk Tea', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
-            //             // ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
-            //             // ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
-            //         ]
-            //     },
-            //     xAxis: {type: 'category'},
-            //     yAxis: {gridIndex: 0},
-            //     grid: {top: '55%'},
-            //     series: [
-            //         {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-            //         {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-            //         {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-            //         {type: 'line', smooth: true, seriesLayoutBy: 'row'},
-            //         {
-            //             type: 'pie',
-            //             id: 'pie',
-            //             radius: '30%',
-            //             center: ['50%', '25%'],
-            //             label: {
-            //                 formatter: '{b}: {@2012} ({d}%)'
-            //             },
-            //             encode: {
-            //                 itemName: 'product',
-            //                 value: '2012',
-            //                 tooltip: '2012'
-            //             }
-            //         }
-            //     ]
-            // };
-            //
-            // MonthChart.on('updateAxisPointer', function (event) {
-            //     var xAxisInfo = event.axesInfo[0];
-            //     if (xAxisInfo) {
-            //         var dimension = xAxisInfo.value + 1;
-            //         MonthChart.setOption({
-            //             series: {
-            //                 id: 'pie',
-            //                 label: {
-            //                     formatter: '{b}: {@[' + dimension + ']} ({d}%)'
-            //                 },
-            //                 encode: {
-            //                     value: dimension,
-            //                     tooltip: dimension
-            //                 }
-            //             }
-            //         });
-            //     }
-            // });
-
+            MonthChart.on("click", function (params) {
+                console.log(params.name);
+                Bar(params.name);
+            });
             MonthChart.setOption(option);
         });
+    });
+</script>
+
+<script>
+    function Bar(date) {
+        // 基于准备好的dom，初始化echarts实例
+        var DayBarChart = echarts.init(document.getElementById('day-bar'));
+        $.ajax({
+            url: '/dashboard/month/',
+            data: {date: date},
+            type: 'post',
+            success: function (res) {
+                console.log(res.item);
+                // 柱状图
+                bar_option = {
+                    title: {
+                        text: res.date,
+                        // subtext: '数据来自网络'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: ['更新情况', '新增情况']
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: res.item,
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 30
+                        }
+                    },
+                    series: [
+                        {
+                            name: '新增情况',
+                            type: 'bar',
+                            data: res.add,
+
+                            itemStyle: {
+                                normal: {
+                                    color: '#3c8dbc',
+                                    lineStyle: {
+                                        color: '#3c8dbc'
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            name: '更新情况',
+                            type: 'bar',
+                            data: res.update,
+                            itemStyle: {
+                                normal: {
+                                    color: '#dd4b39',
+                                    lineStyle: {
+                                        color: '#dd4b39'
+                                    },
+                                },
+                            },
+                        }
+                    ]
+                };
+                DayBarChart.on("click", function (params) {
+                    console.log(params.name);
+                    // Bar(params.name);
+                });
+                DayBarChart.setOption(bar_option);
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        // 默认获取昨天数据
+        Bar()
+    })
+</script>
+<script>
+    $('#this-year').click(function(){
+        $.ajax({
+            url:'/dashboard/month/',
+            data:{period: 'year'},
+            type: 'POST',
+            success(res){
+                console.log(res);
+            },
+        })
     })
 </script>
 {% endblock %}

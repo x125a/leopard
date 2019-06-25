@@ -126,4 +126,5 @@ REST_FRAMEWORK = {
 }
 
 
-MONGO_URI = 'mongodb://admin:tongna888@106.12.113.52:27017/'
+# MONGO_URI = 'mongodb://admin:tongna888@106.12.113.52:27017/'
+MONGO_URI = 'mongodb://root:tongna888@localhost:27017/'
