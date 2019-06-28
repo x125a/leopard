@@ -327,30 +327,22 @@
                 </div>
             </div>
             <!-- search form -->
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
-                    <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
-                </div>
-            </form>
+
             <!-- /.search form -->
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu" data-widget="tree">
                 <li class="header">MAIN NAVIGATION</li>
-                <li class="treeview">
+                <li class="treeview active">
                     <a href="#">
-                        <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                        <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
+                        <i class="fa fa-dashboard"></i> <span>数据主板</span>
+<!--                        <span class="pull-right-container">-->
+<!--                            <i class="fa fa-angle-left pull-right"></i>-->
+<!--                        </span>-->
                     </a>
-                    <ul class="treeview-menu">
-                        <li><a href="../../index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                        <li><a href="../../index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-                    </ul>
+<!--                    <ul class="treeview-menu">-->
+<!--                        <li><a href="../../index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>-->
+<!--                        <li><a href="../../index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>-->
+<!--                    </ul>-->
                 </li>
                 <li class="treeview">
                     <a href="#">
@@ -421,7 +413,7 @@
                         <li><a href="../forms/editors.html"><i class="fa fa-circle-o"></i> Editors</a></li>
                     </ul>
                 </li>
-                <li class="treeview active">
+                <li class="treeview">
                     <a href="#">
                         <i class="fa fa-table"></i> <span>Tables</span>
                         <span class="pull-right-container">
@@ -521,13 +513,13 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                General Form Elements
-                <small>Preview</small>
+                数据面板
+                <!--                <small>Preview</small>-->
             </h1>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="#">Forms</a></li>
-                <li class="active">General Elements</li>
+                <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+                <!--                <li><a href="#">Forms</a></li>-->
+                <!--                <li class="active">General Elements</li>-->
             </ol>
         </section>
 
@@ -957,10 +949,10 @@
                         }
                     ]
                 };
-                DayBarChart.on("click", function (params) {
-                    // console.log(params.name);
-                    // Bar(params.name);
-                });
+                // DayBarChart.on("click", function (params) {
+                //     // console.log(params.name);
+                //     // Bar(params.name);
+                // });
                 DayBarChart.setOption(bar_option);
             }
         });
