@@ -24,7 +24,7 @@ SECRET_KEY = '^v^5ayqfk@x#1dsocxn2*5oxo7zssp#by7o!=sq$-q77gz^d+x'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -126,5 +126,5 @@ REST_FRAMEWORK = {
 }
 
 
-# MONGO_URI = 'mongodb://admin:tongna888@106.12.113.52:27017/'
-MONGO_URI = 'mongodb://root:tongna888@localhost:27017/'
+MONGO_URI = 'mongodb://admin:tongna888@106.12.113.52:27017/'
+# MONGO_URI = 'mongodb://root:tongna888@localhost:27017/'

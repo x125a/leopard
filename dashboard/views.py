@@ -35,10 +35,16 @@ class DaysList(APIView):
 
     def get(self, request):
         now = datetime.datetime.now().date()
-        month = now.replace(day=1)
+        period = request.query_params.dict().get('period')
+        if period == 'month':
+            start, end = now.replace(day=1), now
+        elif period == 'week':
+            start, end = now-datetime.timedelta(now.weekday()), now
+        elif period == 'year':
+            start, end = now.replace(day=1, month=1), now
 
         res = self.db['updata_adddata_num'].find({
-            "data_time":{"$gte": str(month), "$lte": str(now)}
+            "data_time":{"$gte": str(start), "$lte": str(end)}
         }).sort("data_time", 1)
         self.client.close()
 
