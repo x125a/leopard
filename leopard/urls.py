@@ -15,15 +15,30 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import account
-import asset
-import project
-import dashboard
+# import account
+# import asset
+# import project
+# import dashboard
+from single import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('account/', include('account.urls')),
-    path('asset/', include('asset.urls')),
-    path('project/', include('project.urls')),
-    path('dashboard/', include('dashboard.urls')),
+
+    # 模板
+    path('', views.index),
+    path('node/', views.node),
+    path('login/', views.login),
+    path('logout/', views.logout),
+    path('project/', views.project),
+
+    # 数据面板
+    path('api/month/', views.DaysList.as_view()),
+    # 节点管理
+    path('api/node/', views.NodeList.as_view()),
+    path('api/node/<pk>', views.NodeDetail.as_view()),
+
+    # 爬虫管理
+    path('api/project/', views.PorjectList.as_view()),
+    # 验证码
+    path('api/check/', views.check),
 ]

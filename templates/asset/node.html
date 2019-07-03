@@ -1,0 +1,201 @@
+        {% extends 'index.html' %}
+        {% block content %}
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Data Tables
+                    <small>advanced tables</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li><a href="#">Tables</a></li>
+                    <li class="active">Data tables</li>
+                </ol>
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">节点管理</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <table id="node-list" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>状态</th>
+                                        <th>节点名</th>
+                                        <th>IP地址</th>
+                                        <th>端口</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="modal fade" id="node-detail-model" style="display: none;">
+                                <div class="text-center"
+                                     style="position: absolute;left: 35%;top: 25%;border-radius: 8px;width: 50%;height: 40%;">
+                                    <div class="box box-info">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">修改节点</h3>
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <!-- form start -->
+                                        <form class="form-horizontal" id="node-modify-model">
+                                            <div class="box-body">
+                                                <div class="form-group">
+                                                    <label for="inputEmail3" class="col-sm-2 control-label">节点名</label>
+
+                                                    <div class="col-sm-9">
+                                                        <input type="hidden" name="node-nid-model">
+                                                        <input type="text" name="node-name-model" class="form-control"
+                                                               id="inputEmail3">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword3"
+                                                           class="col-sm-2 control-label">IP地址</label>
+
+                                                    <div class="col-sm-9">
+                                                        <input type="text" name="node-ip-model" class="form-control" readonly="readonly" id="inputPassword3">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputPassword3"
+                                                           class="col-sm-2 control-label">端口</label>
+
+                                                    <div class="col-sm-9">
+                                                        <input type="text" name="node-port-model" class="form-control"
+                                                               id="inputPassword3">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label">备注</label>
+                                                    <div class="col-sm-9">
+                                                        <textarea class="form-control" name="node-desc-model" rows="3"
+                                                              style="resize:none;"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.box-body -->
+                                            <div class="box-footer">
+                                                <button type="button" id="node-delete" class="btn btn-danger pull-left">删除
+                                                </button>
+                                                <button type="button" id="node-modify" class="btn btn-info pull-right">
+                                                    确定
+                                                </button>
+                                            </div>
+                                            <!-- /.box-footer -->
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </section>
+            <!-- /.content -->
+        {% endblock %}
+
+{% block js %}
+<script>
+    $(function () {
+        $('#example1').DataTable()
+        $('#example2').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        var tbody = '<tbody>';
+        $.ajax({
+            url: '/asset/node/',
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                {#console.log(res);#}
+                $.each(res, function (k, v) {
+                    var status = '';
+                    if (v.status == 1) {
+                        status = '<span class="label label-success">正常</span>'
+                    } else {
+                        status = '<span class="label label-danger">错误</span>'
+                    }
+                    tbody += '<tr><td>' + k + '</td>' +
+                        '<td>' + status + '</td>' +
+                        '<td>' + v.name + '</td>' +
+                        '<td>' + v.ip + '</td>' +
+                        '<td>' + v.port + '</td>' +
+                        '<td>' +
+                        '<button type="button" data="' + v.nid +
+                        '" class="btn btn-info btn-xs" data-toggle="modal" data-target="#node-detail-model" onclick="NodeEdit(this)">编辑</button> ' +
+                        '<button type="button" class="btn btn-success btn-xs" onclick="NodeDeploy(this)">配置</button>' +
+                        '</td></tr>'
+                });
+                tbody += '</tbody>';
+                $('#node-list').append(tbody)
+            }
+        })
+    })
+</script>
+<script>
+    function NodeEdit(obj) {
+        $.ajax({
+            url: '/asset/node/' + $(obj).attr("data"),
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                console.log(res)
+                $("input[name='node-name-model']").val(res.name);
+                $("input[name='node-nid-model']").val(res.nid);
+                $("input[name='node-ip-model']").val(res.ip);
+                $("input[name='node-port-model']").val(res.port);
+                $("textarea[name='node-desc-model']").val(res.description);
+            }
+        })
+    }
+</script>
+<script type="text/javascript">
+    $('#node-modify').click(function () {
+            var nid=$("input[name='node-nid-model']").val();
+            var name=$("input[name='node-name-model']").val();
+            var ip=$("input[name='node-ip-model']").val();
+            var port=$("input[name='node-port-model']").val();
+            var desc=$("textarea[name='node-desc-model']").val();
+            $.ajax({
+                url: '/asset/node/' + nid,
+                type: 'post',
+                data: {nid: nid, name:name, ip:ip, port:port, description:desc},
+                success: function (res) {
+                    location.href = '/asset/'
+                }
+            })
+        });
+</script>
+<script type="text/javascript">
+    $('#node-delete').click(function () {
+            var nid=$("input[name='node-nid-model']").val();
+            $.ajax({
+                url: '/asset/node/' + nid,
+                type: 'delete',
+                success: function (res) {
+                    location.href = '/asset/'
+                }
+            })
+        });
+</script>
+{% endblock %}

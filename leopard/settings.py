@@ -36,10 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'account',
-    'asset',
-    'project',
-    'dashboard',
+    # 'account',
+    # 'asset',
+    # 'project',
+    # 'dashboard',
+    'single',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +82,16 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'leopard',
+#         'USER': 'root',
+#         'PASSWORD': '123.com',
+#         'HOST': '106.12.112.207',
+#         'PORT': '3306',
+#     }
+# }
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 

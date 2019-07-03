@@ -8,7 +8,9 @@ import pandas as pd
 import json
 import datetime
 import pymongo
+from account.views import login_required
 
+# @login_required
 def index(request):
     return render(request, 'index.html')
 
@@ -32,6 +34,7 @@ class DaysList(APIView):
             'data_company_record': '外省备案',
             'data_company_record_engineer': '外省备案人员',
         }
+        self.year = str(datetime.datetime.now().year)
 
     def get(self, request):
         now = datetime.datetime.now().date()
@@ -54,9 +57,8 @@ class DaysList(APIView):
             tmp = {}
             date = row.pop('data_time')
             df = pd.DataFrame(list(row.values()))
-            tmp['date'] = date
+            tmp['date'] = date.lstrip(self.year).lstrip('-')
             tmp['value'] = (df.iloc[:,0].sum(), df.iloc[:,1].sum())
-        
             data.append(tmp)
 
         return Response(data)
@@ -64,9 +66,10 @@ class DaysList(APIView):
     def post(self, request):
         yesterday = datetime.datetime.now().date() - datetime.timedelta(days=1)
         date = request.POST.get('date', str(yesterday))
+        if not date.startswith(self.year):
+            date = '-'.join([self.year, date])
+
         res = self.db['updata_adddata_num'].find({'data_time':date})
-        self.client.close()
-        
         tmp = {}
         for row in res:
             del row['_id']
@@ -83,5 +86,5 @@ class DaysList(APIView):
             tmp['add'] = add
             tmp['update'] = update
             tmp['item'] = item
-
+        self.client.close()
         return Response(tmp)
