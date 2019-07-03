@@ -52,7 +52,10 @@ def project(request):
 
 
 def scrapyd_obj(url):
-    return ScrapydAPI(url)
+    try:
+        return ScrapydAPI(url, timeout=0.1)
+    except:
+        return
 
 
 def uri(ip, port):
@@ -179,16 +182,30 @@ class PorjectList(APIView):
     '''工程列表'''
 
     def get(self, request):
+        projects = []
         nodes = Node.objects.all()
         for node in nodes:
+            row = {}
+
             try:
                 scrapyd = scrapyd_obj(uri(node.ip, node.port))
-                for project in scrapyd.list_projects():
-                    spiders = scrapyd.list_spiders(project)
-                    print(spiders)
+                if scrapyd:
+
+                    spiders = []
+                    for project in scrapyd.list_projects():
+                        spider = {}
+                        spider['name'] = project
+                        spider['spiders'] = scrapyd.list_spiders(project)
+                        spiders.append(spider)
+                    row['project'] = spiders
             except:
                 pass
-        return Response()
+
+            row['ip'] = node.ip
+            if 'project' in row:
+                projects.append(row)
+        # print(projects)
+        return Response(projects)
 
 
 class NodeList(APIView):

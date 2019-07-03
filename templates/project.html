@@ -45,6 +45,7 @@
                 <!-- /.box -->
             </div>
         </div>
+
         <!-- /.row -->
     </section>
     <!-- /.content -->
@@ -54,28 +55,40 @@
         $(document).ready(function () {
             var tbody = '<tbody>';
             $.ajax({
-                url: '/api/node/',
+                url: '/api/project/',
                 type: 'get',
                 dataType: 'json',
                 success: function (res) {
-                    {#console.log(res);#}
-                    $.each(res, function (k, v) {
-                        var status = '';
-                        if (v.status == 1) {
-                            status = '<span class="label label-success">正常</span>'
-                        } else {
-                            status = '<span class="label label-danger">错误</span>'
-                        }
-                        tbody += '<tr><td>' + k + '</td>' +
-                            '<td>' + status + '</td>' +
-                            '<td>' + v.name + '</td>' +
-                            '<td>' + v.ip + '</td>' +
-                            '<td>' + v.port + '</td>' +
-                            '<td>' +
-                            '<button type="button" data="' + v.nid +
-                            '" class="btn btn-info btn-xs" data-toggle="modal" data-target="#node-detail-model" onclick="NodeEdit(this)">编辑</button> ' +
-                            '<button type="button" class="btn btn-success btn-xs" onclick="NodeDeploy(this)">配置</button>' +
-                            '</td></tr>'
+                    $.each(res, function (i, project) {
+                        console.log(i, project)
+                        var ip = project.ip;
+                        var row = project.project;
+                        $.each(row, function(j, v){
+                            console.log(j, v)
+                        })
+                            // console.log('=========', ip, project)
+                            // $.each(project, function(k, spiders) {
+                            //     console.log(k, spiders)
+
+                            // })
+
+                        
+                        // var status = '';
+                        // if (v.status == 1) {
+                        //     status = '<span class="label label-success">正常</span>'
+                        // } else {
+                        //     status = '<span class="label label-danger">错误</span>'
+                        // }
+                        // tbody += '<tr><td>' + k + '</td>' +
+                        //     '<td>' + status + '</td>' +
+                        //     '<td>' + v.name + '</td>' +
+                        //     '<td>' + v.ip + '</td>' +
+                        //     '<td>' + v.port + '</td>' +
+                        //     '<td>' +
+                        //     '<button type="button" data="' + v.nid +
+                        //     '" class="btn btn-info btn-xs" data-toggle="modal" data-target="#node-detail-model" onclick="NodeEdit(this)">编辑</button> ' +
+                        //     '<button type="button" class="btn btn-success btn-xs" onclick="NodeDeploy(this)">配置</button>' +
+                        //     '</td></tr>'
                     });
                     tbody += '</tbody>';
                     $('#node-list').append(tbody)
