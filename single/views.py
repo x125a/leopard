@@ -182,29 +182,23 @@ class PorjectList(APIView):
     '''工程列表'''
 
     def get(self, request):
-        projects = []
+        per = 5
+        page = 6
+        host = '127.0.0.1 architecture'
+        projects = {}
         nodes = Node.objects.all()
         for node in nodes:
-            row = {}
-
             try:
                 scrapyd = scrapyd_obj(uri(node.ip, node.port))
                 if scrapyd:
-
-                    spiders = []
                     for project in scrapyd.list_projects():
-                        spider = {}
-                        spider['name'] = project
-                        spider['spiders'] = scrapyd.list_spiders(project)
-                        spiders.append(spider)
-                    row['project'] = spiders
+                        key = '%s %s' % (node.ip, project)
+                        projects[key] = scrapyd.list_spiders(project)
             except:
                 pass
 
-            row['ip'] = node.ip
-            if 'project' in row:
-                projects.append(row)
-        # print(projects)
+        projects[host] = projects[host][(page-1)*per:page*per]
+
         return Response(projects)
 
 
@@ -214,7 +208,7 @@ class NodeList(APIView):
     def get_status(self, pk):
         try:
             node = Node.objects.get(nid=pk)
-            resp = requests.get(uri(node.ip, node.port), timeout=1)
+            resp = requests.get(uri(node.ip, node.port), timeout=0.1)
         except:
             return 0
 
