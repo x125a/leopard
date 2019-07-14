@@ -201,6 +201,9 @@ class PorjectList(APIView):
 
         return Response(projects)
 
+    def post(self):
+        pass
+
 
 class NodeList(APIView):
     '''节点列表'''
@@ -222,6 +225,7 @@ class NodeList(APIView):
         serializer = NodeSerializer(nodes, many=True)
 
         return Response(serializer.data)
+
 
 
 class NodeDetail(APIView):
