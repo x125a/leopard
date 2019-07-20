@@ -182,28 +182,65 @@ class PorjectList(APIView):
     '''工程列表'''
 
     def get(self, request):
-        per = 5
-        page = 6
-        host = '127.0.0.1 architecture'
-        projects = {}
+        projects = []
         nodes = Node.objects.all()
         for node in nodes:
             try:
                 scrapyd = scrapyd_obj(uri(node.ip, node.port))
                 if scrapyd:
+
                     for project in scrapyd.list_projects():
-                        key = '%s %s' % (node.ip, project)
-                        projects[key] = scrapyd.list_spiders(project)
+                        print(node.ip, project)
+                        tmp = node.ip + ' ' + project
+                        projects.append(tmp)
             except:
                 pass
-
-        projects[host] = projects[host][(page-1)*per:page*per]
-
         return Response(projects)
 
-    def post(self):
-        pass
+        # per = 5
+        # page = 6
+        # host = '127.0.0.1 architecture'
+        # projects = {}
+        # nodes = Node.objects.all()
+        # for node in nodes:
+        #     try:
+        #         scrapyd = scrapyd_obj(uri(node.ip, node.port))
+        #         if scrapyd:
+        #             for project in scrapyd.list_projects():
+        #                 key = '%s %s' % (node.ip, project)
+        #                 projects[key] = scrapyd.list_spiders(project)
+        #     except:
+        #         pass
 
+        # projects[host] = projects[host][(page-1)*per:page*per]
+
+        # return Response(projects)
+
+    def post(self, request):
+        result = {}
+        spiders = []
+        per = 10
+        data = request.POST.dict()
+        page = int(data.get('page', 1))
+        if not data['project'].startswith('------'):
+            ip, project = data['project'].split()
+            
+            scrapyd = scrapyd_obj(uri(ip, '6800'))
+            if scrapyd:
+                spiders = scrapyd.list_spiders(project)
+        pages = self.pages(len(spiders), 10)
+        print(pages)
+        spiders = spiders[(page-1)*per:page*per]
+        result['spiders'] = spiders
+        result['pages'] = pages
+        result['cur'] = page
+        return Response(result)
+
+    def pages(self, total, per):
+        page = int(total / per)
+        if total % per != 0:
+            page += 1
+        return page
 
 class NodeList(APIView):
     '''节点列表'''
