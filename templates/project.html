@@ -1,211 +1,171 @@
 {% extends 'index.html' %}
 {% block content %}
-<!-- Content Header (Page header) -->
-<section class="content-header">
-    <h1>
-        爬虫管理
-    </h1>
-    <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
-        <li><a href="#">爬虫管理</a></li>
-    </ol>
-</section>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            爬虫管理
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+            <li><a href="#">爬虫管理</a></li>
+        </ol>
+    </section>
 
 
-<section class="box box-default" style="width: 100%;">
-    <div class="col-md-6">
-        <div class="form-group" style="margin-top: 15px;">
-            <select class="form-control select2" id="project-select" style="width: 100%;">
+    <section class="box box-default" style="width: 100%;">
+        <div class="col-md-6">
+            <div class="form-group" style="margin-top: 15px;">
+                <select class="form-control select2" id="project-select" style="width: 100%;">
 
-            </select>
+                </select>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-<!-- Main content -->
-<section class="content">
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-body">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>序号</th>
-                            <th>爬虫</th>
-                            <th>状态</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody id="spider-list">
-                        </tbody>
-                    </table>
-                </div>
-                <div class="box-footer clearfix">
-                    <ul class="pagination pagination-sm no-margin pull-right" id="project-pages">
-                        
-                    </ul>
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>爬虫</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="spider-list">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right" id="project-pages">
+
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<!-- /.content -->
+    </section>
+    <!-- /.content -->
 {% endblock %}
 {% block js %}
-<script>
-    $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
 
-        $.ajax({
-            url: '/api/project/',
-            type: 'get',
-            dataType: 'json',
-            success: function (res) {
-                var options = '<option>------</option>';
-                $.each(res, function (index, project) {
-                    options += '<option>' + project + '</option>';
-                });
-                $('#project-select').html(options)
-            }
-        })
-    })
-</script>
-<script type="text/javascript">
-    $("select#project-select").change(function () {
-        GetSpiderList($(this).val(), 1)
-        // $.ajax({
-        //     url: '/api/project/',
-        //     type: 'post',
-        //     data: {project: $(this).val(), per:10},
-        //     dataType: 'json',
-        //     success: function (res) {
-
-        //         var tr_tag = '';
-        //         $.each(res, function (index, spider) {
-        //             tr_tag += '<tr><td>' + spider+
-        //                 '</td><td>' + spider +
-        //                 '</td><td>'+ spider+ '</td></tr>'
-        //         });
-        //         $('#spider-list').html(tr_tag)
-        //     }
-        // })
-
-    });
-</script>
-<script type="text/javascript">
-    function GetSpiderList(project, page) {
-        $.ajax({
-            url: '/api/project/',
-            type: 'post',
-            data: {project: project, page:page},
-            dataType: 'json',
-            success: function (res) {
-
-                var tr_tag = '';
-                $.each(res.spiders, function (index, spider) {
-                    ind = parseInt((res.cur-1)*10) + parseInt(index)
-                    tr_tag += '<tr><td>' + ind +
-                        '</td><td>' + spider +
-                        '</td><td>' + '正常' +
-                        '</td><td>'+ '启动' + '</td></tr>';
-                });
-                $('#spider-list').html(tr_tag);
-
-                var page = '<li><a onclick="GetSpiderList('+"'"+project+"'"+','+'1)">«</a></li>';
-
-                for (var i=1; i<=res.pages; i++){
-                    page += '<li><a onclick="GetSpiderList('+"'"+project+"'"+','+i+')">'+ i +'</a></li>';
+            $.ajax({
+                url: '/api/project/',
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    var options = '<option>------</option>';
+                    $.each(res, function (index, project) {
+                        options += '<option>' + project + '</option>';
+                    });
+                    $('#project-select').html(options)
                 }
-                page += '<li><a onclick="GetSpiderList('+"'"+project+"'"+','+res.pages+')">»</a></li>';
-                $('#project-pages').html(page);
-            }
+            })
         })
-    }
-</script>
-<!--<script>-->
-<!--    $(document).ready(function () {-->
-<!--        var row = '<tbody>';-->
-<!--        $.ajax({-->
-<!--            url: '/api/project/',-->
-<!--            type: 'get',-->
-<!--            dataType: 'json',-->
-<!--            success: function (res) {-->
-<!--                var html = '';-->
-<!--                $.each(res, function (ip, project) {-->
-<!--                    var row = '<div class="row"><div class="col-xs-12">' +-->
-<!--                        '<div class="box"><div class="box-header">' +-->
-<!--                        '<h3 class="box-title">' + '127.0.0.1' + '</h3>' +-->
-<!--                        '<div class="box-tools">' +-->
-<!--                        '                <ul class="pagination pagination-sm no-margin pull-right">' +-->
-<!--                        '                  <li><a href="#">«</a></li>' +-->
-<!--                        '                  <li><a href="#">1</a></li>' +-->
-<!--                        '                  <li><a href="#">2</a></li>' +-->
-<!--                        '                  <li><a href="#">3</a></li>' +-->
-<!--                        '                  <li><a href="#">»</a></li>' +-->
-<!--                        '                </ul>' +-->
-<!--                        '              </div>' +-->
-<!--                        '</div><div class="box-body table-responsive no-padding">' +-->
-<!--                        '<table class="table table-hover"><tbody>' +-->
-<!--                        '<tr><th>序号</th><th>爬虫</th><th>操作</th>';-->
+    </script>
+    <script type="text/javascript">
+        $("select#project-select").change(function () {
+            GetSpiderList($(this).val(), 1)
+        });
+    </script>
+    <script type="text/javascript">
+        function GetSpiderList(project, page) {
+            $.ajax({
+                url: '/api/project/',
+                type: 'post',
+                data: {project: project, page: page},
+                dataType: 'json',
+                success: function (res) {
 
-<!--                    $.each(project, function (i, spider) {-->
-<!--                        row += '<tr><td>' + 'spider' +-->
-<!--                            '</td><td>' + 'spider' +-->
-<!--                            '</span></td><td>' + 'spider' + '</td></tr>';-->
-<!--                    });-->
-<!--                    row += '</tbody></table></div></div></div></div>';-->
-<!--                    html += row;-->
-<!--                });-->
-<!--                $('.content').html(html)-->
-<!--            }-->
-<!--        })-->
-<!--    })-->
-<!--</script>-->
-<script>
-    function NodeEdit(obj) {
-        $.ajax({
-            url: '/api/node/' + $(obj).attr("data"),
-            type: 'get',
-            dataType: 'json',
-            success: function (res) {
-                console.log(res)
-                $("input[name='node-name-model']").val(res.name);
-                $("input[name='node-nid-model']").val(res.nid);
-                $("input[name='node-ip-model']").val(res.ip);
-                $("input[name='node-port-model']").val(res.port);
-                $("textarea[name='node-desc-model']").val(res.description);
-            }
-        })
-    }
-</script>
-<script type="text/javascript">
-    $('#node-modify').click(function () {
-        var nid = $("input[name='node-nid-model']").val();
-        var name = $("input[name='node-name-model']").val();
-        var ip = $("input[name='node-ip-model']").val();
-        var port = $("input[name='node-port-model']").val();
-        var desc = $("textarea[name='node-desc-model']").val();
-        $.ajax({
-            url: '/api/node/' + nid,
-            type: 'post',
-            data: {nid: nid, name: name, ip: ip, port: port, description: desc},
-            success: function (res) {
-                location.href = '/node/'
-            }
-        })
-    });
-</script>
-<script type="text/javascript">
-    $('#node-delete').click(function () {
-        var nid = $("input[name='node-nid-model']").val();
-        $.ajax({
-            url: '/api/node/' + nid,
-            type: 'delete',
-            success: function (res) {
-                location.href = '/node/'
-            }
-        })
-    });
-</script>
+                    var tr_tag = '';
+                    $.each(res.spiders, function (index, spider) {
+                        ind = parseInt((res.cur - 1) * 10) + parseInt(index)
+                        tr_tag += '<tr><td>' + ind +
+                            '</td><td>' + spider +
+                            '</td><td>' + '正常' +
+                            '</td><td><button type="button" data="' + res.node + ',' + res.project + ',' +
+                            spider + '" class="btn btn-success btn-xs" onclick="StartSpider(this)">' + '启动' +
+                            '</button></td></tr>';
+                    });
+                    $('#spider-list').html(tr_tag);
+
+                    var page = '<li><a onclick="GetSpiderList(' + "'" + project + "'" + ',' + '1)">«</a></li>';
+
+                    for (var i = 1; i <= res.pages; i++) {
+                        page += '<li><a onclick="GetSpiderList(' + "'" + project + "'" + ',' + i + ')">' + i + '</a></li>';
+                    }
+                    page += '<li><a onclick="GetSpiderList(' + "'" + project + "'" + ',' + res.pages + ')">»</a></li>';
+                    $('#project-pages').html(page);
+                }
+            })
+        }
+    </script>
+    <script>
+        function StartSpider(obj) {
+            $.ajax({
+                url:'/api/spider/start/',
+                type:'post',
+                dataType:'json',
+                data:{data:$(obj).attr("data")},
+                success:function (res) {
+                    console.log(res)
+                }
+            })
+        }
+    </script>
+
+    <script>
+        function NodeEdit(obj) {
+            $.ajax({
+                url: '/api/node/' + $(obj).attr("data"),
+                type: 'get',
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    $("input[name='node-name-model']").val(res.name);
+                    $("input[name='node-nid-model']").val(res.nid);
+                    $("input[name='node-ip-model']").val(res.ip);
+                    $("input[name='node-port-model']").val(res.port);
+                    $("textarea[name='node-desc-model']").val(res.description);
+                }
+            })
+        }
+    </script>
+    <script type="text/javascript">
+        $('#node-modify').click(function () {
+            var nid = $("input[name='node-nid-model']").val();
+            var name = $("input[name='node-name-model']").val();
+            var ip = $("input[name='node-ip-model']").val();
+            var port = $("input[name='node-port-model']").val();
+            var desc = $("textarea[name='node-desc-model']").val();
+            $.ajax({
+                url: '/api/node/' + nid,
+                type: 'post',
+                data: {nid: nid, name: name, ip: ip, port: port, description: desc},
+                success: function (res) {
+                    location.href = '/node/'
+                }
+            })
+        });
+    </script>
+    <script type="text/javascript">
+        $('#node-delete').click(function () {
+            var nid = $("input[name='node-nid-model']").val();
+            $.ajax({
+                url: '/api/node/' + nid,
+                type: 'delete',
+                success: function (res) {
+                    location.href = '/node/'
+                }
+            })
+        });
+    </script>
 {% endblock %}

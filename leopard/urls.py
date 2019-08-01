@@ -39,6 +39,8 @@ urlpatterns = [
 
     # 爬虫管理
     path('api/project/', views.PorjectList.as_view()),
+
+    path('api/spider/start/', views.start_spider),
     # 验证码
     path('api/check/', views.check),
 ]

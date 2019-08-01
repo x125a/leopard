@@ -53,7 +53,7 @@ def project(request):
 
 def scrapyd_obj(url):
     try:
-        return ScrapydAPI(url, timeout=0.1)
+        return ScrapydAPI(url, timeout=1)
     except:
         return
 
@@ -187,6 +187,7 @@ class PorjectList(APIView):
         for node in nodes:
             try:
                 scrapyd = scrapyd_obj(uri(node.ip, node.port))
+
                 if scrapyd:
 
                     for project in scrapyd.list_projects():
@@ -197,25 +198,6 @@ class PorjectList(APIView):
                 pass
         return Response(projects)
 
-        # per = 5
-        # page = 6
-        # host = '127.0.0.1 architecture'
-        # projects = {}
-        # nodes = Node.objects.all()
-        # for node in nodes:
-        #     try:
-        #         scrapyd = scrapyd_obj(uri(node.ip, node.port))
-        #         if scrapyd:
-        #             for project in scrapyd.list_projects():
-        #                 key = '%s %s' % (node.ip, project)
-        #                 projects[key] = scrapyd.list_spiders(project)
-        #     except:
-        #         pass
-
-        # projects[host] = projects[host][(page-1)*per:page*per]
-
-        # return Response(projects)
-
     def post(self, request):
         result = {}
         spiders = []
@@ -224,16 +206,20 @@ class PorjectList(APIView):
         page = int(data.get('page', 1))
         if not data['project'].startswith('------'):
             ip, project = data['project'].split()
-            
-            scrapyd = scrapyd_obj(uri(ip, '6800'))
+            result['project'] = project
+            node = Node.objects.get(ip=ip)
+            print(node.ip, node.port)
+            scrapyd = scrapyd_obj(uri(node.ip, node.port))
             if scrapyd:
                 spiders = scrapyd.list_spiders(project)
         pages = self.pages(len(spiders), 10)
         print(pages)
-        spiders = spiders[(page-1)*per:page*per]
+        spiders = spiders[(page - 1) * per:page * per]
         result['spiders'] = spiders
         result['pages'] = pages
         result['cur'] = page
+        result['node'] = node.nid
+
         return Response(result)
 
     def pages(self, total, per):
@@ -241,6 +227,7 @@ class PorjectList(APIView):
         if total % per != 0:
             page += 1
         return page
+
 
 class NodeList(APIView):
     '''节点列表'''
@@ -262,7 +249,6 @@ class NodeList(APIView):
         serializer = NodeSerializer(nodes, many=True)
 
         return Response(serializer.data)
-
 
 
 class NodeDetail(APIView):
@@ -292,3 +278,15 @@ class NodeDetail(APIView):
         node = self.get_row(pk)
         node.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET', 'POST'])
+def start_spider(request):
+    if request.method == 'POST':
+        data = request.POST.dict()
+        nid, project, spider = data['data'].split(',')
+        node = Node.objects.get(nid=nid)
+        scrapyd = scrapyd_obj(uri(node.ip, node.port))
+        if scrapyd:
+            job = scrapyd.schedule(project, spider)
+            return Response({'job': job})
