@@ -51,6 +51,11 @@ def project(request):
     return render(request, 'project.html')
 
 
+@login_required
+def task(request):
+    return render(request, 'task.html')
+
+
 def scrapyd_obj(url):
     try:
         return ScrapydAPI(url, timeout=1)
@@ -191,7 +196,6 @@ class PorjectList(APIView):
                 if scrapyd:
 
                     for project in scrapyd.list_projects():
-                        print(node.ip, project)
                         tmp = node.ip + ' ' + project
                         projects.append(tmp)
             except:
@@ -208,18 +212,27 @@ class PorjectList(APIView):
             ip, project = data['project'].split()
             result['project'] = project
             node = Node.objects.get(ip=ip)
-            print(node.ip, node.port)
+
             scrapyd = scrapyd_obj(uri(node.ip, node.port))
             if scrapyd:
+                tasks = scrapyd.list_jobs(project)
+                for task in tasks.items():
+                    print(task)
+
+                spiders = {}
                 spiders = scrapyd.list_spiders(project)
+                for spider in spiders:
+                    print(spider)
+                tasks = scrapyd.list_jobs(project)
+                print(tasks['running'])
         pages = self.pages(len(spiders), 10)
-        print(pages)
+
         spiders = spiders[(page - 1) * per:page * per]
         result['spiders'] = spiders
         result['pages'] = pages
         result['cur'] = page
         result['node'] = node.nid
-
+        print(result)
         return Response(result)
 
     def pages(self, total, per):

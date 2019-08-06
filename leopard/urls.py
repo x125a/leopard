@@ -30,6 +30,7 @@ urlpatterns = [
     path('login/', views.login),
     path('logout/', views.logout),
     path('project/', views.project),
+    path('task/', views.task),
 
     # 数据面板
     path('api/month/', views.DaysList.as_view()),
